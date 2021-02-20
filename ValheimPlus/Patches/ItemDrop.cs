@@ -1,15 +1,14 @@
 ﻿using HarmonyLib;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
     [HarmonyPatch(typeof(ItemDrop), "Awake")]
-    public static class ChangeTooltip
+    public class ChangeTooltip : BasePatch
     {
         private static void Prefix(ref ItemDrop __instance)
         {
 
-            if (Configuration.Current.Items.IsEnabled && Configuration.Current.Items.NoTeleportPrevention)
+            if (Conf.Items.IsEnabled && Conf.Items.NoTeleportPrevention)
             {
                 __instance.m_itemData.m_shared.m_teleportable = true;
             }
@@ -32,9 +31,9 @@ namespace ValheimPlus
             }*/
 
 
-            if (Configuration.Current.Items.IsEnabled)
+            if (Conf.Items.IsEnabled)
             {
-                float itemWeigthReduction = Configuration.Current.Items.BaseItemWeightReduction;
+                float itemWeigthReduction = Conf.Items.BaseItemWeightReduction;
                 if (itemWeigthReduction > 0)
                 {
                     __instance.m_itemData.m_shared.m_weight = __instance.m_itemData.m_shared.m_weight + ((__instance.m_itemData.m_shared.m_weight / 100) * itemWeigthReduction);
@@ -44,7 +43,7 @@ namespace ValheimPlus
                     __instance.m_itemData.m_shared.m_weight = __instance.m_itemData.m_shared.m_weight - ((__instance.m_itemData.m_shared.m_weight / 100) * (itemWeigthReduction * -1));
                 }
 
-                float itemStackMultiplier = Configuration.Current.Items.ItemStackMultiplier;
+                float itemStackMultiplier = Conf.Items.ItemStackMultiplier;
                 if(__instance.m_itemData.m_shared.m_maxStackSize > 1)
                 {
                     if (itemStackMultiplier >= 1)

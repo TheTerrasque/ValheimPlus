@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using ValheimPlus.Configurations;
 
 // ToDo add packet system to convey map markers
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
 
     [HarmonyPatch(typeof(Minimap))]
@@ -27,14 +26,14 @@ namespace ValheimPlus
     }
 
     [HarmonyPatch(typeof(Minimap), "UpdateExplore")]
-    public static class ChangeMapBehavior
+    public class ChangeMapBehavior : BasePatch
     {
 
         private static void Prefix(ref float dt, ref Player player, ref Minimap __instance, ref float ___m_exploreTimer, ref float ___m_exploreInterval, ref List<ZNet.PlayerInfo> ___m_tempPlayerInfo) // Set after awake function
         {
-            if (!Configuration.Current.Map.IsEnabled) return;
+            if (!Conf.Map.IsEnabled) return;
 
-            if (Configuration.Current.Map.ShareMapProgression)
+            if (Conf.Map.ShareMapProgression)
             {
                 float explorerTime = ___m_exploreTimer;
                 explorerTime += Time.deltaTime;
@@ -47,14 +46,14 @@ namespace ValheimPlus
                     {
                         foreach (ZNet.PlayerInfo m_Player in ___m_tempPlayerInfo)
                         {
-                            hookExplore.call_Explore(__instance, m_Player.m_position, Configuration.Current.Map.ExploreRadius);
+                            hookExplore.call_Explore(__instance, m_Player.m_position, Conf.Map.ExploreRadius);
                         }
                     }
                 }
             }
 
             // Always reveal for your own, we do this non the less to apply the potentially bigger exploreRadius
-            hookExplore.call_Explore(__instance, player.transform.position, Configuration.Current.Map.ExploreRadius);
+            hookExplore.call_Explore(__instance, player.transform.position, Conf.Map.ExploreRadius);
             
         }
     }

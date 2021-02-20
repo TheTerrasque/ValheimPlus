@@ -1,22 +1,17 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ValheimPlus.Configurations;
 
 namespace ValheimPlus 
 {
-    class FireplaceFuel 
+    class FireplaceFuel : BasePatch
     {
         [HarmonyPatch(typeof(Fireplace), "UpdateFireplace")]
         public static class TorchesNoFuel 
         {
             private static void Postfix(Fireplace __instance, ref ZNetView ___m_nview) 
             {
-                if (Configuration.Current.FireplaceC.IsEnabled)
+                if (Conf.FireplaceC.IsEnabled)
 	            {
-		            if (Configuration.Current.FireplaceC.onlyTorches)
+		            if (Conf.FireplaceC.onlyTorches)
 	                {
 		                if (__instance.GetHoverText().Contains("torch") || __instance.GetHoverText().Contains("Scounce") || __instance.GetHoverText().Contains("brazier")) 
                         {

@@ -1,17 +1,16 @@
 ﻿using HarmonyLib;
 using System;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
     [HarmonyPatch(typeof(Inventory), "IsTeleportable")]
-    public static class noItemTeleportPrevention
+    public class noItemTeleportPrevention: BasePatch
     {
         private static void Postfix(ref Boolean __result)
         {
-            if (Configuration.Current.Items.IsEnabled)
+            if (Conf.Items.IsEnabled)
             {
-                if (Configuration.Current.Items.NoTeleportPrevention)
+                if (Conf.Items.NoTeleportPrevention)
                     __result = true;
             }
         }

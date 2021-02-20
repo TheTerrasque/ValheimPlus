@@ -1,16 +1,15 @@
 ﻿using HarmonyLib;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
     [HarmonyPatch(typeof(Fermenter), "Awake")]
-    public static class ApplyFermenterChanges
+    public class ApplyFermenterChanges: BasePatch
     {
         private static bool Prefix(ref float ___m_fermentationDuration, ref Fermenter __instance)
         {
-            if (Configuration.Current.Fermenter.IsEnabled)
+            if (Conf.Fermenter.IsEnabled)
             {
-                float fermenterDuration = Configuration.Current.Fermenter.FermenterDuration;
+                float fermenterDuration = Conf.Fermenter.FermenterDuration;
                 if (fermenterDuration > 0)
                 {
                     ___m_fermentationDuration = fermenterDuration;
@@ -21,13 +20,13 @@ namespace ValheimPlus
 
     }
     [HarmonyPatch(typeof(Fermenter), "GetItemConversion")]
-    public static class ApplyFermenterItemCountChanges
+    public class ApplyFermenterItemCountChanges: BasePatch
     {
         private static void Postfix(ref Fermenter.ItemConversion __result)
         {
-            if (Configuration.Current.Fermenter.IsEnabled)
+            if (Conf.Fermenter.IsEnabled)
             {
-                int fermenterItemCount = Configuration.Current.Fermenter.FermenterItemsProduced;
+                int fermenterItemCount = Conf.Fermenter.FermenterItemsProduced;
                 if (fermenterItemCount > 0)
                 {
                     __result.m_producedItems = fermenterItemCount;

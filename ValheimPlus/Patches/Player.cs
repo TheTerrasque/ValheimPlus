@@ -1,11 +1,10 @@
 ﻿using HarmonyLib;
 using System;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
     [HarmonyPatch(typeof(Player), "OnSpawned")]
-    public static class ModifyOnSpawned
+    public class ModifyOnSpawned : BasePatch
     {
         private static void Prefix()
         {
@@ -28,11 +27,11 @@ namespace ValheimPlus
     }
 
     [HarmonyPatch(typeof(Player), "GetMaxCarryWeight")]
-    public static class ModifyMaximumCarryWeight
+    public class ModifyMaximumCarryWeight : BasePatch
     {
         private static void Postfix(ref float __result)
         {
-            if (Configuration.Current.Player.IsEnabled)
+            if (Conf.Player.IsEnabled)
             {
                 bool Megingjord = false;
                 float carryWeight = __result;
@@ -43,10 +42,10 @@ namespace ValheimPlus
                     carryWeight -= 150;
                 }
 
-                carryWeight = Configuration.Current.Player.BaseMaximumWeight;
+                carryWeight = Conf.Player.BaseMaximumWeight;
                 if (Megingjord)
                 {
-                    carryWeight = carryWeight + Configuration.Current.Player.BaseMegingjordBuff;
+                    carryWeight = carryWeight + Conf.Player.BaseMegingjordBuff;
                 }
 
                 __result = carryWeight;
@@ -56,7 +55,7 @@ namespace ValheimPlus
 
     // ToDo have item tooltips be affected.
     [HarmonyPatch(typeof(Player), "UpdateFood")]
-    public static class ApplyFoodChanges
+    public class ApplyFoodChanges : BasePatch
     {
         private static Boolean Prefix(ref Player __instance, ref float dt, ref bool forceUpdate)
         {
@@ -105,7 +104,7 @@ namespace ValheimPlus
                         float num2 = 1f;
                         __instance.m_seman.ModifyHealthRegen(ref num2);
                         num *= num2;
-                        Helper.getPlayerCharacter(__instance).Heal(num, true);
+                        getPlayerCharacter(__instance).Heal(num, true);
                     }
                 }
             }
@@ -119,9 +118,9 @@ namespace ValheimPlus
             float defaultDeltaTimeTarget = 1f;
             float newDetalTimeTarget = 1f;
 
-            if (Configuration.Current.Food.IsEnabled)
+            if (Conf.Food.IsEnabled)
             {
-                float food_multiplier = Configuration.Current.Food.FoodDurationMultiplier;
+                float food_multiplier = Conf.Food.FoodDurationMultiplier;
                 if (food_multiplier == 50) food_multiplier = 51; // Decimal issue
 
                 if (food_multiplier >= 0)

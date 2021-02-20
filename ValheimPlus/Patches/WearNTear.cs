@@ -1,16 +1,15 @@
 ﻿using HarmonyLib;
 using System;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
     [HarmonyPatch(typeof(WearNTear), "HaveRoof")]
-    public static class RemoveWearNTear
+    public class RemoveWearNTear : BasePatch
     {
         
         private static void Postfix(ref Boolean __result)
         {
-            if (Configuration.Current.Building.IsEnabled && Configuration.Current.Building.NoWeatherDamage)
+            if (Conf.Building.IsEnabled && Conf.Building.NoWeatherDamage)
             {
                 __result = true;
             }

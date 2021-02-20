@@ -2,28 +2,17 @@
 using System;
 using System.Linq;
 using UnityEngine;
-using System.IO;
-using System.Reflection;
-using System.Runtime;
-using IniParser;
-using IniParser.Model;
-using System.Globalization;
-using Steamworks;
-using ValheimPlus;
-using UnityEngine.Rendering;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
-
-    class AdvancedBuildingMode
+    class AdvancedBuildingMode : BasePatch
     {
         [HarmonyPatch(typeof(Player), "UpdatePlacementGhost")]
         public static class ModifyPlacingRestrictionOfGhost
         {
             private static Boolean Prefix(Player __instance, bool flashGuardStone)
             {
-                if (Configuration.Current.AdvancedBuildingMode.IsEnabled)
+                if (Conf.AdvancedBuildingMode.IsEnabled)
                 {
                     ABM.PlayerInstance = __instance;
                     ABM.run();
@@ -49,7 +38,7 @@ namespace ValheimPlus
 
                     }
                 }
-                if (Configuration.Current.AdvancedBuildingMode.IsEnabled && Configuration.Current.Building.NoInvalidPlacementRestriction)
+                if (Conf.AdvancedBuildingMode.IsEnabled && Conf.Building.NoInvalidPlacementRestriction)
                 {
                     if (__instance.m_placementStatus == Player.PlacementStatus.Invalid)
                     {
@@ -80,7 +69,7 @@ namespace ValheimPlus
     }
 
 
-    class ABM
+    class ABM : BasePatch
     {
         // Status
         public static Boolean isActive = false;
@@ -114,7 +103,7 @@ namespace ValheimPlus
                 return;
             }
 
-            if (Input.GetKeyDown(Configuration.Current.AdvancedBuildingMode.ExitAdvancedBuildingMode))
+            if (Input.GetKeyDown(Conf.AdvancedBuildingMode.ExitAdvancedBuildingMode))
             {
                 if (isActive)
                     exitMode();
@@ -167,7 +156,7 @@ namespace ValheimPlus
             }
             else
             {
-                if (Input.GetKeyDown(Configuration.Current.AdvancedBuildingMode.EnterAdvancedBuildingMode))
+                if (Input.GetKeyDown(Conf.AdvancedBuildingMode.EnterAdvancedBuildingMode))
                 {
                     startMode();
                 }

@@ -1,27 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BepInEx;
-using Unity;
-using UnityEngine;
-using System.IO;
-using System.Reflection;
-using System.Runtime;
-using IniParser;
-using IniParser.Model;
-using HarmonyLib;
-using System.Globalization;
-using Steamworks;
-using ValheimPlus;
-using UnityEngine.Rendering;
-using UnityEngine.UI;
-using ValheimPlus.Configurations;
+﻿using HarmonyLib;
 
 namespace ValheimPlus
 {
-    class Experience
+    class Experience: BasePatch
     {
         
         [HarmonyPatch(typeof(Skills), "RaiseSkill")]
@@ -37,7 +18,7 @@ namespace ValheimPlus
 
             private static void Postfix(Skills __instance, Skills.SkillType skillType, float factor = 1f)
             {
-                if (Configuration.Current.Player.IsEnabled && Configuration.Current.Player.ExperienceGainedNotifications)
+                if (Conf.Player.IsEnabled && Conf.Player.ExperienceGainedNotifications)
                 {
                     Skills.Skill skill = __instance.GetSkill(skillType);
                     float percent = skill.m_accumulator / (skill.GetNextLevelRequirement() / 100);

@@ -1,19 +1,18 @@
 ﻿using HarmonyLib;
 using Steamworks;
 using System;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
 
     [HarmonyPatch(typeof(ZNet), "Awake")]
-    public static class ChangeGameServerVariables
+    public class ChangeGameServerVariables : BasePatch
     {
         private static void Postfix(ref ZNet __instance)
         {
-            if (Configuration.Current.Server.IsEnabled)
+            if (Conf.Server.IsEnabled)
             {
-                int maxPlayers = Configuration.Current.Server.MaxPlayers;
+                int maxPlayers = Conf.Server.MaxPlayers;
                 if (maxPlayers >= 1)
                 {
                     // Set Server Instance Max Players
@@ -25,13 +24,13 @@ namespace ValheimPlus
 
     }
     [HarmonyPatch(typeof(SteamGameServer), "SetMaxPlayerCount")]
-    public static class ChangeSteamServerVariables
+    public class ChangeSteamServerVariables : BasePatch
     {
         private static void Prefix(ref int cPlayersMax)
         {
-            if (Configuration.Current.Server.IsEnabled)
+            if (Conf.Server.IsEnabled)
             {
-                int maxPlayers = Configuration.Current.Server.MaxPlayers;
+                int maxPlayers = Conf.Server.MaxPlayers;
                 if (maxPlayers >= 1)
                 {
                     cPlayersMax = maxPlayers;
@@ -42,20 +41,18 @@ namespace ValheimPlus
 
     }
     [HarmonyPatch(typeof(FejdStartup), "IsPublicPasswordValid")]
-    public static class ChangeServerPasswordBehavior
+    public class ChangeServerPasswordBehavior : BasePatch
     {
 
-        private static void Postfix(ref Boolean __result) // Set after awake function
+        private static void Postfix(ref bool __result) // Set after awake function
         {
-            if (Configuration.Current.Server.IsEnabled)
+            if (Conf.Server.IsEnabled)
             {
-                if (Configuration.Current.Server.DisableServerPassword)
+                if (Conf.Server.DisableServerPassword)
                 {
                     __result = true;
                 }
             }
         }
     }
-
-
 }

@@ -1,18 +1,17 @@
 ﻿using HarmonyLib;
 using System;
 using UnityEngine;
-using ValheimPlus.Configurations;
 
-namespace ValheimPlus
+namespace ValheimPlus.Patches
 {
-    class AdvancedEditingMode
+    class AdvancedEditingMode : BasePatch
     {
         [HarmonyPatch(typeof(Player), "Update")]
-        public static class AdvancedEditingModeHook
+        public static class AdvancedEditingModeHook 
         {
             private static void Postfix(Player __instance)
             {
-                if (Configuration.Current.AdvancedEditingMode.IsEnabled)
+                if (Conf.AdvancedEditingMode.IsEnabled)
                 {
                     AEM.PlayerInstance = __instance;
                     AEM.run();
@@ -40,7 +39,7 @@ namespace ValheimPlus
         }
     }
 
-    class AEM
+    class AEM : BasePatch
     {
         // Status
         public static Boolean isActive = false;
@@ -82,7 +81,7 @@ namespace ValheimPlus
                 ) &&
                 raycastHit.collider &&
                 !raycastHit.collider.attachedRigidbody &&
-                Vector3.Distance(Helper.getPlayerCharacter(playerInstance).m_eye.position, raycastHit.point) < playerInstance.m_maxPlaceDistance)
+                Vector3.Distance(getPlayerCharacter(playerInstance).m_eye.position, raycastHit.point) < playerInstance.m_maxPlaceDistance)
             {
                 HitPoint = raycastHit.point;
                 HitNormal = raycastHit.normal;
@@ -156,7 +155,7 @@ namespace ValheimPlus
 
             if (!isActive)
             {
-                if (Input.GetKeyDown(Configuration.Current.AdvancedEditingMode.EnterAdvancedEditingMode))
+                if (Input.GetKeyDown(Conf.AdvancedEditingMode.EnterAdvancedEditingMode))
                 {
                     if (checkForObject())
                         startMode();
@@ -164,7 +163,7 @@ namespace ValheimPlus
                 }
             }
 
-            if (Input.GetKeyDown(Configuration.Current.AdvancedEditingMode.AbortAndExitAdvancedEditingMode))
+            if (Input.GetKeyDown(Conf.AdvancedEditingMode.AbortAndExitAdvancedEditingMode))
             {
                 exitMode();
                 resetObjectTransform();
@@ -211,12 +210,12 @@ namespace ValheimPlus
             float rY = 0;
             
 
-            if (Input.GetKeyDown(Configuration.Current.AdvancedEditingMode.ResetAdvancedEditingMode))
+            if (Input.GetKeyDown(Conf.AdvancedEditingMode.ResetAdvancedEditingMode))
             {
                 resetObjectTransform();
             }
 
-            if (Input.GetKeyDown(Configuration.Current.AdvancedEditingMode.ConfirmPlacementOfAdvancedEditingMode))
+            if (Input.GetKeyDown(Conf.AdvancedEditingMode.ConfirmPlacementOfAdvancedEditingMode))
             {
                 if (isContainer())
                     dropContainerContents();

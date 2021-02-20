@@ -4,10 +4,6 @@ namespace ValheimPlus
 {
     static class Helper
     {
-		public static Character getPlayerCharacter(Player __instance)
-		{
-			return (Character)__instance;
-		}
 
         public static float tFloat(this float value, int digits)
         {
