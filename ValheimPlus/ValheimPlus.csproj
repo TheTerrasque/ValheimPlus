@@ -330,6 +330,7 @@
     <Compile Include="AdvancedEditingMode.cs" />
     <Compile Include="Beehive.cs" />
     <Compile Include="Configurations\BaseConfig.cs" />
+    <Compile Include="Configurations\ConfigDescriptionAttribute.cs" />
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationExtra.cs" />
     <Compile Include="Configurations\Sections\AdvancedBuildingModeConfiguration.cs" />

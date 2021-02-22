@@ -14,6 +14,32 @@ namespace ValheimPlus.Configurations
 {
     public class ConfigurationExtra
     {
+        public class ConfigInfo
+        {
+            public ConfigDescriptionAttribute Description { get; set; }
+            public string DefaultValue { get; set; }
+            public Type ValueType { get; set; }
+            public string Name { get; set; }
+        }
+        public static ConfigInfo GetInformationFor(PropertyInfo prop)
+        {
+            var result = new ConfigInfo();
+            foreach (var attrib in prop.GetCustomAttributes(true))
+            {
+                if (attrib is ConfigDescriptionAttribute)
+                {
+                    result.Description = (ConfigDescriptionAttribute)attrib;
+                    break;
+                }
+            }
+            result.Name = prop.Name;
+            result.ValueType = prop.PropertyType;
+            var instance = prop.PropertyType.Assembly.CreateInstance(prop.DeclaringType.FullName);
+            if (instance != null)
+                result.DefaultValue = prop.GetValue(instance, null).ToString();
+            else Debug.Log($" -> Could not create instance of {prop.DeclaringType.FullName}");
+            return result;
+        }
         public static string GetServerHashFor(Configuration config) {
             var serialized = "";
             foreach (var prop in typeof(Configuration).GetProperties())
@@ -88,7 +114,6 @@ namespace ValheimPlus.Configurations
             return conf;
         }
     }
-
 
 
     public static class IniDataExtensions

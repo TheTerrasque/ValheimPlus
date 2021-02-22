@@ -47,6 +47,10 @@ namespace ValheimPlus.Configurations
 
         public void LoadIniData(KeyDataCollection data)
         {
+            var serializer = new SerializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+
             IsEnabled = true;
 
             foreach (var prop in typeof(T).GetProperties())
@@ -64,7 +68,11 @@ namespace ValheimPlus.Configurations
                     Debug.Log($" Loading key {keyName}");
                 else
                     Debug.Log($" Key {keyName} not defined, using default value");
-               
+
+
+                var metadata = ConfigurationExtra.GetInformationFor(prop);
+                Debug.Log(serializer.Serialize(metadata));
+
 
                 if (!data.ContainsKey(keyName)) continue;
 
